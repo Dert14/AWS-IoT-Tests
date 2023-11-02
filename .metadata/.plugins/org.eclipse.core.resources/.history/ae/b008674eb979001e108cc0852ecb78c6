@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdint.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "esp_spi_flash.h"
+
+#include "FastLED.h"
+#include "FX.h"
+
+#include "app_main.h"
+
+#include "driver/gpio.h"
+
+#define NUM_LEDS 7
+#define DATA_PIN 21
+
+CRGB leds[NUM_LEDS];
+
+/*
+extern "C" {
+  void app_main();
+}
+*/
+
+void app_main() {
+  FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);
+
+  while(true) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      // Generate a random color
+      CHSV color = CHSV(rand() % 256, 255, rand() % 256);
+      leds[i] = color;
+    }
+
+    FastLED.show();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  }
+}

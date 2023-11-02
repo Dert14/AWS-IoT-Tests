@@ -1,0 +1,20 @@
+{
+    "project_name":       "bootloader",
+    "project_path":       "C:/programy/ESP32_IDF/components/bootloader/subproject",
+    "build_dir":          "C:/Users/marci/Documents/programowanie/ESP_IDF_workspaces/udemy_esp32_V1/build/bootloader",
+    "config_file":        "C:/Users/marci/Documents/programowanie/ESP_IDF_workspaces/udemy_esp32_V1/sdkconfig",
+    "config_defaults":    "",
+    "app_elf":            "bootloader.elf",
+    "app_bin":            "bootloader.bin",
+    "git_revision":       "v4.3.1-dirty",
+    "target":             "esp32",
+    "phy_data_partition": "",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "xtensa-esp32-elf-",
+    "config_environment" : {
+        "COMPONENT_KCONFIGS" : "C:/programy/ESP32_IDF/components/efuse/Kconfig;C:/programy/ESP32_IDF/components/esp32/Kconfig;C:/programy/ESP32_IDF/components/esp_common/Kconfig;C:/programy/ESP32_IDF/components/esp_system/Kconfig;C:/programy/ESP32_IDF/components/log/Kconfig;C:/programy/ESP32_IDF/components/newlib/Kconfig;C:/programy/ESP32_IDF/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "C:/programy/ESP32_IDF/components/bootloader/Kconfig.projbuild;C:/programy/ESP32_IDF/components/esptool_py/Kconfig.projbuild;C:/programy/ESP32_IDF/components/partition_table/Kconfig.projbuild"
+    },
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_hw_support", "esp_rom", "esp_system", "esptool_py", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "C:/programy/ESP32_IDF/components/bootloader", "C:/programy/ESP32_IDF/components/bootloader_support", "C:/programy/ESP32_IDF/components/efuse", "C:/programy/ESP32_IDF/components/esp32", "C:/programy/ESP32_IDF/components/esp_common", "C:/programy/ESP32_IDF/components/esp_hw_support", "C:/programy/ESP32_IDF/components/esp_rom", "C:/programy/ESP32_IDF/components/esp_system", "C:/programy/ESP32_IDF/components/esptool_py", "C:/programy/ESP32_IDF/components/hal", "C:/programy/ESP32_IDF/components/log", "C:/programy/ESP32_IDF/components/bootloader/subproject/main", "C:/programy/ESP32_IDF/components/bootloader/subproject/components/micro-ecc", "C:/programy/ESP32_IDF/components/newlib", "C:/programy/ESP32_IDF/components/partition_table", "C:/programy/ESP32_IDF/components/soc", "C:/programy/ESP32_IDF/components/spi_flash", "C:/programy/ESP32_IDF/components/xtensa", "" ]
+}

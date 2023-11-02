@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.espressif.idf.launch.serial.launchConfigurationType">
+    <booleanAttribute key="FLASH_OVER_JTAG" value="false"/>
+    <stringAttribute key="org.eclipse.cdt.debug.core.target_arch" value="xtensa"/>
+    <stringAttribute key="org.eclipse.cdt.debug.core.target_os" value="esp32s2"/>
+    <stringAttribute key="org.eclipse.cdt.launch.ATTR_LOCATION" value="C:\programy\ESP32-Tool\.espressif\python_env\idf4.3_py3.8_env\Scripts\python.exe"/>
+    <stringAttribute key="org.eclipse.cdt.launch.ATTR_TOOL_ARGUMENTS" value="C:\programy\ESP32_IDF\tools\idf.py -p COM3 flash"/>
+    <stringAttribute key="org.eclipse.cdt.launch.WORKING_DIRECTORY" value="${workspace_loc:udemy_esp32_V1}"/>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/udemy_esp32_V1"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="4"/>
+    </listAttribute>
+    <stringAttribute key="org.eclipse.launchbar.core.originalName" value="udemy_esp32_V1"/>
+    <stringAttribute key="org.eclipse.launchbar.core.providerClass" value="com.espressif.idf.launch.serial.internal.SerialFlashLaunchConfigProvider"/>
+</launchConfiguration>

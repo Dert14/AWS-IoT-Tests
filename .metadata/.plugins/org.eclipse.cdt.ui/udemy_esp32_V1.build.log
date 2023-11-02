@@ -1,0 +1,5 @@
+cmake --build . -- -v
+[1/3] cmd.exe /C "cd /D C:\Users\marci\Documents\programowanie\ESP_IDF_workspaces\udemy_esp32_V1\build\bootloader && C:\programy\ESP32-Tool\.espressif\tools\cmake\3.16.4\bin\cmake.exe --build ."
+ninja: no work to do.
+Build complete (0 errors, 0 warnings): C:\Users\marci\Documents\programowanie\ESP_IDF_workspaces\udemy_esp32_V1\build
+Total time taken to build the project: 571 ms

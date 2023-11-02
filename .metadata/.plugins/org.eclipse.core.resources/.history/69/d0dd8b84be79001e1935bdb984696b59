@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdint.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "esp_spi_flash.h"
+
+#include "FastLED.h"
+#include "FX.h"
+
+#include "app_main.h"
+
+#include "driver/gpio.h"
+
+
+#define NUM_LEDS 7
+#define DATA_PIN 21
+
+CRGB leds[NUM_LEDS];
+
+void ledControllerInit() {
+    FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+    FastLED.setBrightness(32); // Set LED brightness (0-255)
+}
+
+void ledControllerUpdate() {
+    static uint8_t hue = 0;
+
+    for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CHSV(hue, 255, 255);
+        hue += 5;
+    }
+
+    FastLED.show();
+}

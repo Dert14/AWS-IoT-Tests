@@ -1,0 +1,5 @@
+source "C:/programy/ESP32_IDF/components/app_update/Kconfig.projbuild"
+source "C:/programy/ESP32_IDF/components/bootloader/Kconfig.projbuild"
+source "C:/programy/ESP32_IDF/components/esptool_py/Kconfig.projbuild"
+source "C:/programy/ESP32_IDF/components/partition_table/Kconfig.projbuild"
+source "C:/Users/marci/Documents/programowanie/ESP_IDF_workspaces/udemy_esp32_V1/main/Kconfig.projbuild"

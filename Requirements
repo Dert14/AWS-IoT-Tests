@@ -1,0 +1,13 @@
+-Łączenie po WiFi
+-Łączenie z AWS i shadowem
+-Wysyłanie informacje o reportet stated i reagowanie na delte
+-Po zmianie delty przekaźnik setujemy
+-Oszczędność prądu nie jest konieczna
+
+
+
+co jeśli stracimy połączenie?
+Zobaczymy
+
+Czy named shadowy?
+Da się ale wymaga to dość dużo modyfikacji biblioteki, dużo kopania
