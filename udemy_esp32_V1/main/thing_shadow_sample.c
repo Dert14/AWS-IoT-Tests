@@ -166,6 +166,7 @@ void aws_iot_task(void *param) {
 	bool socket_on_recived[5] = {0, 0, 0, 0, 0};
 	bool socket_on_send[5] = {1, 1, 1, 1, 1};
 	bool update_needed = false;
+	bool data_recived = false;
 
 	//ustawaimy odpowiednie GPIO jako wyjscia
 	for (int i = 0; i < 5; i++)
@@ -316,6 +317,7 @@ void aws_iot_task(void *param) {
 				if(socket_on_send[i] != socket_on_recived[i])
 				{
 					update_needed = true;
+
 				}
 			}
 
@@ -332,6 +334,8 @@ void aws_iot_task(void *param) {
 						ESP_LOGI(TAG, "Update Shadow: %s", JsonDocumentBuffer);
 						rc = aws_iot_shadow_update(&mqttClient, CONFIG_AWS_EXAMPLE_THING_NAME, JsonDocumentBuffer,
 												   ShadowUpdateStatusCallback, NULL, 4, true);
+						//uznajemy ze odebralismy pierwszy raz dane (bo je wyslalismy)
+						data_recived = true;
 						//Przypisujemy wartoscia wyslanym wartosci odebrane
 						for (int i = 0; i < 5; i++)
 						{
