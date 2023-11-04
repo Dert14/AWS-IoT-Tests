@@ -72,7 +72,7 @@ void ShadowUpdateStatusCallback(const char *pThingName, ShadowActions_t action, 
 }
 
 //callback ktory zapisuje w logach jezli pContext != NULL
-void socketActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen, jsonStruct_t *pContext) {
+void ledtActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen, jsonStruct_t *pContext) {
     IOT_UNUSED(pJsonString);
     IOT_UNUSED(JsonStringDataLen);
 
@@ -110,35 +110,35 @@ void aws_iot_task(void *param) {
 		//tworzymy tablice structow obsugujacych shadowy
 		jsonStruct_t socket_actuator[5] = {
 				{
-				.cb = socketActuate_Callback,
+				.cb = ledtActuate_Callback,
 				.pData = &socket_on_recived[0],
 				.pKey = "soc1",
 				.type = SHADOW_JSON_BOOL,
 				.dataLength = sizeof(bool)
 				},
 				{
-				.cb = socketActuate_Callback,
+				.cb = ledtActuate_Callback,
 				.pData = &socket_on_recived[1],
 				.pKey = "soc2",
 				.type = SHADOW_JSON_BOOL,
 				.dataLength = sizeof(bool)
 				},
 				{
-				.cb = socketActuate_Callback,
+				.cb = ledtActuate_Callback,
 				.pData = &socket_on_recived[2],
 				.pKey = "soc3",
 				.type = SHADOW_JSON_BOOL,
 				.dataLength = sizeof(bool)
 				},
 				{
-				.cb = socketActuate_Callback,
+				.cb = ledtActuate_Callback,
 				.pData = &socket_on_recived[3],
 				.pKey = "soc4",
 				.type = SHADOW_JSON_BOOL,
 				.dataLength = sizeof(bool)
 				},
 				{
-				.cb = socketActuate_Callback,
+				.cb = ledtActuate_Callback,
 				.pData = &socket_on_recived[4],
 				.pKey = "soc5",
 				.type = SHADOW_JSON_BOOL,

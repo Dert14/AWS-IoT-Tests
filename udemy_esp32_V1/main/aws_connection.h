@@ -61,10 +61,11 @@ extern const uint8_t private_pem_key_end[] asm("_binary_private_pem_key_end");
 
 SemaphoreHandle_t mySemaphore;
 bool data_recived;
+int led_states[4];
 
 static void event_handler(void*, esp_event_base_t, int32_t , void*);
 void ShadowUpdateStatusCallback(const char*, ShadowActions_t , Shadow_Ack_Status_t ,const char*, void*);
-void socketActuate_Callback(const char*, uint32_t ,jsonStruct_t*);
+void ledtActuate_Callback(const char*, uint32_t ,jsonStruct_t*);
 void aws_iot_task(void*);
 static void initialise_wifi(void);
 void aws_connect();

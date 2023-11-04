@@ -32,7 +32,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
 
-    //je�li to IP_EVENT oraz IP_EVENT_STA_GOT_IP to laczymy sie z IP ??????????????????????????????????????????????????
+    //jezli to IP_EVENT oraz IP_EVENT_STA_GOT_IP to laczymy sie z IP ??????????????????????????????????????????????????
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG, "Connected with IP Address:" IPSTR, IP2STR(&event->ip_info.ip));
@@ -71,13 +71,13 @@ void ShadowUpdateStatusCallback(const char *pThingName, ShadowActions_t action, 
 }
 
 //callback ktory zapisuje w logach jezli pContext != NULL
-void socketActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen, jsonStruct_t *pContext) {
+void ledtActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen, jsonStruct_t *pContext) {
     IOT_UNUSED(pJsonString);
     IOT_UNUSED(JsonStringDataLen);
 
     if(pContext != NULL) {
     	//ESP_LOGI(TAG, "Delta changed");
-        ESP_LOGI(TAG, "Delta - Socket state changed to %d", *(bool *) (pContext->pData));
+        ESP_LOGI(TAG, "Delta - LED state changed to %d", *(int *) (pContext->pData));
     }
 }
 
@@ -85,20 +85,15 @@ void socketActuate_Callback(const char *pJsonString, uint32_t JsonStringDataLen,
 void aws_iot_task(void *param) {
 
 	//definiujemy tablice pinow wyjsciowych, danych odebranych i wyslanych
-	int output_pin[5] = {2, 4, 5, 15, 18};
-	bool socket_on_recived[5] = {0, 0, 0, 0, 0};
-	bool socket_on_send[5] = {1, 1, 1, 1, 1};
+	int led_state_recived[4] = {0, 0, 0, 0};
+	int led_state_send[4] = {1, 1, 1, 1};
+	for (int i = 0; i < 4; i++)
+		{
+			led_states[i] = 0;
+		}
 	bool update_needed = false;
 	data_recived = false;
-	mySemaphore = xSemaphoreCreateBinary();
 
-	//ustawaimy odpowiednie GPIO jako wyjscia
-	for (int i = 0; i < 5; i++)
-	{
-		gpio_pad_select_gpio(output_pin[i]);
-		gpio_set_direction(output_pin[i], GPIO_MODE_OUTPUT);
-	}
-	//bool actual_state = false;
 	while (1)
 	{
 		//bazowo zakladamy ze status polaczenia jest nieudany???
@@ -108,41 +103,34 @@ void aws_iot_task(void *param) {
 		size_t sizeOfJsonDocumentBuffer = sizeof(JsonDocumentBuffer) / sizeof(JsonDocumentBuffer[0]);
 
 		//tworzymy tablice structow obsugujacych shadowy
-		jsonStruct_t socket_actuator[5] = {
+		jsonStruct_t led_actuator[4] = {
 				{
-				.cb = socketActuate_Callback,
-				.pData = &socket_on_recived[0],
-				.pKey = "soc1",
-				.type = SHADOW_JSON_BOOL,
-				.dataLength = sizeof(bool)
+				.cb = ledtActuate_Callback,
+				.pData = &led_state_recived[0],
+				.pKey = "R",
+				.type = SHADOW_JSON_UINT16,
+				.dataLength = sizeof(int)
 				},
 				{
-				.cb = socketActuate_Callback,
-				.pData = &socket_on_recived[1],
-				.pKey = "soc2",
-				.type = SHADOW_JSON_BOOL,
-				.dataLength = sizeof(bool)
+				.cb = ledtActuate_Callback,
+				.pData = &led_state_recived[1],
+				.pKey = "G",
+				.type = SHADOW_JSON_UINT16,
+				.dataLength = sizeof(int)
 				},
 				{
-				.cb = socketActuate_Callback,
-				.pData = &socket_on_recived[2],
-				.pKey = "soc3",
-				.type = SHADOW_JSON_BOOL,
-				.dataLength = sizeof(bool)
+				.cb = ledtActuate_Callback,
+				.pData = &led_state_recived[2],
+				.pKey = "B",
+				.type = SHADOW_JSON_UINT16,
+				.dataLength = sizeof(int)
 				},
 				{
-				.cb = socketActuate_Callback,
-				.pData = &socket_on_recived[3],
-				.pKey = "soc4",
-				.type = SHADOW_JSON_BOOL,
-				.dataLength = sizeof(bool)
-				},
-				{
-				.cb = socketActuate_Callback,
-				.pData = &socket_on_recived[4],
-				.pKey = "soc5",
-				.type = SHADOW_JSON_BOOL,
-				.dataLength = sizeof(bool)
+				.cb = ledtActuate_Callback,
+				.pData = &led_state_recived[3],
+				.pKey = "T",
+				.type = SHADOW_JSON_UINT16,
+				.dataLength = sizeof(int)
 				}
 		};
 
@@ -203,9 +191,9 @@ void aws_iot_task(void *param) {
 		}
 
 		//W tym miejscu obslugujemy delte shadowa kolejno dla kazdego gniazda
-		for (int i = 0; i < 5 ; i++)
+		for (int i = 0; i < 4 ; i++)
 		{
-			rc = aws_iot_shadow_register_delta(&mqttClient, &socket_actuator[i]);
+			rc = aws_iot_shadow_register_delta(&mqttClient, &led_actuator[i]);
 		}
 
 		if(SUCCESS != rc) {
@@ -215,10 +203,10 @@ void aws_iot_task(void *param) {
 		// publikujemy zmiany temperatury w loopie
 		while(NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc) {
 			rc = aws_iot_shadow_yield(&mqttClient, 200);
-			//ustawiamy wyjscia na wartosci odebrane
-			for (int i = 0; i < 5 ; i++)
+			//przepisujemy odebrane wartosci
+			for (int i = 0; i < 4 ; i++)
 				{
-					gpio_set_level(output_pin[i], socket_on_recived[i]);
+					led_states[i] = led_state_recived[i];
 				}
 			if(NETWORK_ATTEMPTING_RECONNECT == rc || shadowUpdateInProgress) {
 				rc = aws_iot_shadow_yield(&mqttClient, 1000);
@@ -228,20 +216,16 @@ void aws_iot_task(void *param) {
 			}
 			//wypisujemy temperature i stan okna
 			ESP_LOGI(TAG, "=======================================================================================");
-			ESP_LOGI(TAG, "On Device: socket state %s", socket_on_recived[0] ? "true" : "false");
-			ESP_LOGI(TAG, "On Device: socket state 2 %s", socket_on_recived[1] ? "true" : "false");
-			ESP_LOGI(TAG, "On Device: socket state 3 %s", socket_on_recived[2] ? "true" : "false");
-			ESP_LOGI(TAG, "On Device: socket state 4 %s", socket_on_recived[3] ? "true" : "false");
-			ESP_LOGI(TAG, "On Device: socket state 5 %s", socket_on_recived[4] ? "true" : "false");
+			//ESP_LOGI(TAG, "On Device: socket state %d", led_state_recived[0] ? "true" : "false");
+
 
 			//Tu sprawdzamy czy jakis update
 			update_needed = false;
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				if(socket_on_send[i] != socket_on_recived[i])
+				if(led_state_send[i] != led_state_recived[i])
 				{
 					update_needed = true;
-
 				}
 			}
 
@@ -249,7 +233,7 @@ void aws_iot_task(void *param) {
 			rc = aws_iot_shadow_init_json_document(JsonDocumentBuffer, sizeOfJsonDocumentBuffer);
 			if(SUCCESS == rc) {
 				//dodajemy reported
-				rc = aws_iot_shadow_add_reported(JsonDocumentBuffer, sizeOfJsonDocumentBuffer, 5, &socket_actuator[0], &socket_actuator[1], &socket_actuator[2], &socket_actuator[3], &socket_actuator[4]);
+				rc = aws_iot_shadow_add_reported(JsonDocumentBuffer, sizeOfJsonDocumentBuffer, 4, &led_actuator[0], &led_actuator[1], &led_actuator[2], &led_actuator[3]);
 				//jezli sie udalo to finalizujemy naszego Jsona
 				if(SUCCESS == rc) {
 					rc = aws_iot_finalize_json_document(JsonDocumentBuffer, sizeOfJsonDocumentBuffer);
@@ -259,13 +243,12 @@ void aws_iot_task(void *param) {
 						rc = aws_iot_shadow_update(&mqttClient, CONFIG_AWS_EXAMPLE_THING_NAME, JsonDocumentBuffer,
 												   ShadowUpdateStatusCallback, NULL, 4, true);
 						//uznajemy ze odebralismy pierwszy raz dane (bo je wyslalismy)
-						xSemaphoreGive(mySemaphore);
 						data_recived = true;
 
 						//Przypisujemy wartoscia wyslanym wartosci odebrane
-						for (int i = 0; i < 5; i++)
+						for (int i = 0; i < 4; i++)
 						{
-							socket_on_send[i] = socket_on_recived[i];
+							led_state_send[i] = led_state_recived[i];
 						}
 						shadowUpdateInProgress = true;
 					}

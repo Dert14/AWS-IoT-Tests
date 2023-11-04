@@ -46,11 +46,21 @@ void initialize_led_task(void* pvParameters) {
 void flash_led_task(void* pvParameters) {
 	while (1)
 	{
-		if (data_recived)
+		if (led_states[0] != 0)
 		{
-			fill_solid(leds, NUM_LEDS, CRGB::Green);
+			for (int i = 0; i < 7; i++)
+			{
+			leds[i] = CRGB(led_states[0], led_states[1], led_states[2]);
+			}
 			FastLED.show();
 		}
+		/*
+		else if (data_recived)
+		{
+			fill_solid(leds, NUM_LEDS, CRGB::Black);
+			FastLED.show();
+		}
+		*/
 		vTaskDelay(pdMS_TO_TICKS(500));
 	}
 }
