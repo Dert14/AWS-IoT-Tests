@@ -20,84 +20,11 @@
  *
  * See example README for more details.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <limits.h>
-#include <string.h>
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "esp_event.h"
-#include "esp_log.h"
-#include "esp_vfs_fat.h"
-#include "driver/sdmmc_host.h"
+#include "aws_connection.h"
+#include "led_driver.h"
 
-#include "nvs.h"
-#include "nvs_flash.h"
-
-#include "aws_iot_config.h"
-#include "aws_iot_log.h"
-#include "aws_iot_version.h"
-#include "aws_iot_mqtt_client_interface.h"
-#include "aws_iot_shadow_interface.h"
-
-#include "driver/gpio.h"
-
-
-#include <esp_idf_version.h>
-#include "app_main.h"
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 1, 0)
-// Features supported in 4.1+
-#define ESP_NETIF_SUPPORTED
-#endif
-
-
-
-static const char *TAG = "shadow";
-
-//maksymalna dlugosc przesylanego update Jsona
-#define MAX_LENGTH_OF_UPDATE_JSON_BUFFER 300
-
-/* The examples use simple WiFi configuration that you can set via
-   'make menuconfig'.
-
-   If you'd rather not, just change the below entries to strings with
-   the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
-*/
-
-//mozna wpisac recznie "WIFI_SSID" oraz "WIFI_PASSWORD", ale lepiej pewnie z sdkconfig
-#define EXAMPLE_WIFI_SSID CONFIG_WIFI_SSID
-#define EXAMPLE_WIFI_PASS CONFIG_WIFI_PASSWORD
-
-
-//grupa FreeRTOS do sygnalizowania kiedy jestesmy polaczeni i gotowi do wyslania requestu
-static EventGroupHandle_t wifi_event_group;
-
-/* The event group allows multiple bits for each event,
-   but we only care about one event - are we connected
-   to the AP with an IP? */
-
-//ten bit wydaje sie ze oznacza czy jestesmy polaczeni z AP o tym IP
 const int CONNECTED_BIT = BIT0;
-
-
-
-//odczytujemy nasze certyfikaty i (chyba) zamieniamy je na binarki
-
-extern const uint8_t aws_root_ca_pem_start[] asm("_binary_aws_root_ca_pem_start");
-extern const uint8_t aws_root_ca_pem_end[] asm("_binary_aws_root_ca_pem_end");
-extern const uint8_t certificate_pem_crt_start[] asm("_binary_certificate_pem_crt_start");
-extern const uint8_t certificate_pem_crt_end[] asm("_binary_certificate_pem_crt_end");
-extern const uint8_t private_pem_key_start[] asm("_binary_private_pem_key_start");
-extern const uint8_t private_pem_key_end[] asm("_binary_private_pem_key_end");
-
-//event handler sluzacy do
-//sprawdzania jaki to event glowny a potem konkretnie po ID
 
 static void event_handler(void* arg, esp_event_base_t event_base,
                           int32_t event_id, void* event_data)
@@ -122,9 +49,6 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
     }
 }
-
-//zmienna do sygnalizowania stanu pracy shadowa
-static bool shadowUpdateInProgress;
 
 void ShadowUpdateStatusCallback(const char *pThingName, ShadowActions_t action, Shadow_Ack_Status_t status,
                                 const char *pReceivedJsonDocument, void *pContextData) {
@@ -418,7 +342,6 @@ void app_main()
         err = nvs_flash_init();
     }
     ESP_ERROR_CHECK( err );
-
     initialise_wifi();
     /* Temporarily pin task to core, due to FPU uncertainty */
     xTaskCreatePinnedToCore(&aws_iot_task, "aws_iot_task", 9216, NULL, 5, NULL, 1);

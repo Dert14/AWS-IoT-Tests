@@ -1,0 +1,15 @@
+/*
+ * main.c
+ *
+ *  Created on: 3 lis 2023
+ *      Author: marci
+ */
+#include "aws_connection.h"
+#include "app_main.h"
+
+void app_main(void)
+{
+	aws_connect();
+	app_mainn();
+
+}

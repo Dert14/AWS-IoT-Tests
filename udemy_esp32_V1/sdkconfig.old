@@ -128,8 +128,8 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # Example Configuration
 #
-CONFIG_WIFI_SSID="iPhone (Marcin Klimkiewicz) (2)"
-CONFIG_WIFI_PASSWORD="00000000"
+CONFIG_WIFI_SSID="meow_meow"
+CONFIG_WIFI_PASSWORD="Stuffed0-Footwork-Reps"
 CONFIG_AWS_EXAMPLE_CLIENT_ID="Udemy_ESP32_Test"
 CONFIG_AWS_EXAMPLE_THING_NAME="Udemy_ESP32_Test"
 CONFIG_EXAMPLE_EMBEDDED_CERTS=y
@@ -1159,6 +1159,12 @@ CONFIG_AWS_IOT_SHADOW_MAX_SIZE_OF_THING_NAME=20
 
 # CONFIG_AWS_IOT_SSL_SOCKET_NON_BLOCKING is not set
 # end of Amazon Web Services IoT Platform
+
+#
+# Fast LED
+#
+# CONFIG_FAST_LED_TEST is not set
+# end of Fast LED
 # end of Component config
 
 #
