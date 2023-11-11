@@ -15,7 +15,11 @@ extern "C" {
 
 void flash_led(); // Declare a C linkage function
 void init_led();
-
+_Bool fade_in;
+_Bool fade_out;
+int LED_R;
+int LED_G;
+int LED_B;
 #ifdef __cplusplus
 }
 #endif
